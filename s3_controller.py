@@ -19,7 +19,7 @@ def create_s3_client():
 
 
 
-async def upload_to_s3(file_object):
+def upload_to_s3(file_object):
     client = create_s3_client()
     bucket_path = 'johnnytestbucket'
     file_name = f'otc_prices_monitoring/{datetime.datetime.utcnow().strftime("%Y-%m-%d")}/{datetime.datetime.utcnow().strftime("%H:%M:%S")}.json'
