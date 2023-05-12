@@ -57,6 +57,9 @@ async def get_prices(instrument: str) -> None:
                         memory_array_to_be_printed.append(stream_minus_1)
                         memory_array_to_be_printed.append(curr_res)
                         break
-task_1=asyncio.create_task(get_prices(instrument='BTCEUR'))
-task_2=asyncio.create_task(get_prices(instrument='ETHEUR'))
-asyncio.gather(task_1,task_2)
+async def main():
+    task_1 = asyncio.create_task(get_prices(instrument='BTCEUR'))
+    task_2 = asyncio.create_task(get_prices(instrument='ETHEUR'))
+    await asyncio.gather(task_1, task_2)
+
+asyncio.run(main())
