@@ -28,10 +28,10 @@ async def get_prices(price_channel, instrument: str) -> None:
                                          "heartbeat": True}))
         while True:
             curr_res = orjson.loads(await websocket.recv())
-            print(curr_res)
+            # print(curr_res)
             if "levels" not in curr_res:
                 continue
-            if curr_res['event'] != "Talos_All":
+            if price_channel != 'prices' and curr_res['event'] != "Talos_All":
                 continue
             if len(memory_array) == 0:
                 memory_array.append(curr_res)
