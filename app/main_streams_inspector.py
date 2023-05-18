@@ -4,8 +4,8 @@ import sys
 
 import websockets
 
-from config import ODIN_MONITOR, MARKET_DATA_TOKEN
-from s3_controller import upload_to_s3
+from config.config import ODIN_MONITOR
+from app.controllers.s3_controllers.upload_to_s3 import upload_to_s3
 
 ARGUMENTS = sys.argv
 
