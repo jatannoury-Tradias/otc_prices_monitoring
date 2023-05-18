@@ -1,7 +1,6 @@
 import asyncio
-
+import matplotlib.pyplot as plt
 import datetime
-
 import boto3
 import json
 import pandas as pd
@@ -41,7 +40,13 @@ def get_file_keys_from_s3(prefix: str) -> list:
     file_keys = []
     client = create_s3_client()
     bucket_path = 'johnnytestbucket'
-    response = client.list_objects_v2(Bucket=bucket_path, Prefix=prefix)
+    current_date = datetime.datetime.now()
+
+    current_year = current_date.strftime('%Y')
+    current_month = current_date.strftime('%m')
+    current_day = current_date.strftime('%d')
+    print(f"{prefix}/{current_year}-{current_month}-{current_day}")
+    response = client.list_objects_v2(Bucket=bucket_path, Prefix=f"{prefix}/{current_year}-{current_month}-{current_day}")
     data = response['Contents']
     for key in data:
         file_keys.append(key['Key'])
@@ -72,9 +77,6 @@ def get_defected_price(side, stream, stream_minus_1, stream_plus_1):
         data.append([defected_price.__dict__])
     return data
 
-def list_to_df(results) -> pd.DataFrame:
-    dataframe = pd.DataFrame([results])
-    return dataframe
 
 
 def s3_data_collector():
@@ -83,6 +85,7 @@ def s3_data_collector():
     filekeys = get_file_keys_from_s3(prefix='otc_prices_monitoring/talosprices')
     counter = 0
     for filekey in filekeys:
+        # if counter == 300:break
         data = read_s3_files_content(key=filekey)
         stream_minus_1 = data[0]
         stream = data[1]
@@ -93,8 +96,67 @@ def s3_data_collector():
         sell.extend(current_sell_bids)
         counter +=1
         print(counter)
-    list_to_df(buy)
+    fig,axes = plt.subplots(4,4,figsize=(10, 8))
+    buy_df = pd.DataFrame([element[0] for element in buy],columns = list(buy[0][0].keys()))
+    sell_df = pd.DataFrame([element[0] for element in sell],columns = list(buy[0][0].keys()))
+    buy_btc_df = buy_df[buy_df['instrument'] == "BTCEUR"].groupby("quantity")
+    print(buy_btc_df.first())
+    sell_btc_df = sell_df[sell_df['instrument'] == "BTCEUR"].groupby("quantity")
+    for i, (quantity, group) in enumerate(buy_btc_df):
+        # Calculate the position of the current subplot
+        row = i // 4
+        col = i % 4
+
+        # Select the current subplot
+        ax = axes[row, col]
+        # Plot the data in the current subplot
+        group['price_timestamp'] = group['price_timestamp'].apply(lambda element : datetime.datetime.strptime(element, "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%y-%m-%d %H:%M"))
+        ax.plot(group['price_timestamp'], group['difference_with_old'], label='Difference with Old')
+        ax.plot(group['price_timestamp'], group['difference_with_new'], label='Difference with New')
+
+        # Set title and labels for the current subplot
+        ax.set_title(f'Buy Quantity: {quantity}')
+        ax.set_xlabel('Price Timestamp')
+        ax.set_ylabel('Difference')
+        ax.tick_params(axis='x', rotation=10, labelsize=6)
+        ax.xaxis.set_major_locator(plt.MaxNLocator(5))
+
+        # Add legend to the current subplot
+        # ax.legend()
+    for i, (quantity, group) in enumerate(sell_btc_df):
+        # Calculate the position of the current subplot
+        row = i // 4 + 2 if i // 4 + 2 < 4 else 3
+        col = i % 4
+
+        # Select the current subplot
+        try:
+            ax = axes[row, col]
+        except:
+            pass
+        # Plot the data in the current subplot
+        group['price_timestamp'] = group['price_timestamp'].apply(lambda element : datetime.datetime.strptime(element, "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%y-%m-%d %H:%M"))
+        ax.plot(group['price_timestamp'], group['difference_with_old'], label='Difference with Old')
+        ax.plot(group['price_timestamp'], group['difference_with_new'], label='Difference with New')
+
+        # Set title and labels for the current subplot
+        ax.set_title(f'Sell Quantity: {quantity}')
+        ax.set_xlabel('Price Timestamp')
+        ax.set_ylabel('Difference')
+        ax.tick_params(axis='x', rotation=10, labelsize=6)
+        ax.xaxis.set_major_locator(plt.MaxNLocator(5))
+
+        # Add legend to the current subplot
+        # ax.legend()
+
+    # Adjust spacing between subplots
+    plt.subplots_adjust(wspace=0.4, hspace=0.6)
+    plt.tight_layout()
+
+    # Display the plot
+    plt.show()
+    buy_eth_df = buy_df[buy_df['instrument'] == "ETHEUR"]
     print(sell)
+    pass
 
 
 
