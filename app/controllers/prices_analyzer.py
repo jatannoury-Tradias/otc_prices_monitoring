@@ -3,8 +3,8 @@ from app.controllers.data_processors.data_processor import data_processor
 from app.controllers.data_processors.lists_to_dfs import lists_to_dfs
 
 
-async def prices_analyzer(prefix: str, instrument: str):
-    data_lists = data_processor(prefix=prefix, limit=30)
+async def prices_analyzer(prefix: str, instrument: str, limit: int):
+    data_lists = data_processor(prefix=prefix, limit=limit)
     dataframes = lists_to_dfs(sides_lists=data_lists, instrument=instrument)
     defected_prices_data_plotter(dfs=dataframes, prefix=prefix, instrument=instrument)
 

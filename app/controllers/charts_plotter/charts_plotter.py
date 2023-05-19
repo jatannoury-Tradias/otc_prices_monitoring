@@ -1,10 +1,12 @@
 import datetime
+import os.path
 
 from matplotlib import pyplot as plt
+from app.config.paths import DATA_PATH
 
 
 def defected_prices_data_plotter(dfs: dict, prefix: str, instrument: str):
-    fig, axes = plt.subplots(4, 4, figsize=(10, 8))
+    fig, axes = plt.subplots(4, 4, figsize=(20, 10))
     for i, (quantity, group) in enumerate(dfs['buy_df']):
         # Calculate the position of the current subplot
         row = i // 4
@@ -20,9 +22,9 @@ def defected_prices_data_plotter(dfs: dict, prefix: str, instrument: str):
 
         # Set title and labels for the current subplot
         ax.set_title(f'Buy Quantity: {quantity}')
-        ax.set_xlabel('Price Timestamp')
-        ax.set_ylabel('Difference')
-        ax.tick_params(axis='x', rotation=10, labelsize=6)
+        # ax.set_xlabel('Price Timestamp')
+        ax.set_ylabel('Difference (BPS)')
+        ax.tick_params(axis='x', rotation=0, labelsize=8)
         ax.xaxis.set_major_locator(plt.MaxNLocator(5))
 
     for i, (quantity, group) in enumerate(dfs['sell_df']):
@@ -39,8 +41,8 @@ def defected_prices_data_plotter(dfs: dict, prefix: str, instrument: str):
 
         # Set title and labels for the current subplot
         ax.set_title(f'Sell Quantity: {quantity}')
-        ax.set_xlabel('Price Timestamp')
-        ax.set_ylabel('Difference')
+        # ax.set_xlabel('Price Timestamp')
+        ax.set_ylabel('Difference (BPS)')
         ax.tick_params(axis='x', rotation=0, labelsize=8)
         ax.xaxis.set_major_locator(plt.MaxNLocator(5))
     legends = ['Difference with old', 'Difference with new']
@@ -48,9 +50,13 @@ def defected_prices_data_plotter(dfs: dict, prefix: str, instrument: str):
     # plt.legend()
     # Adjust spacing between subplots
     fig.suptitle(f'{prefix[22:].upper()} {instrument} channel stream analysis')
-    plt.subplots_adjust(wspace=0.4, hspace=0.6)
-    # plt.autoscale()
-    plt.tight_layout()
-
+    # plt.subplots_adjust(wspace=0.1, hspace=0.1)
+    fig.subplots_adjust(left=0.05, bottom=0.1, right=0.95, top=0.9, wspace=0.2, hspace=0.43)
+    plt.autoscale()
+    # plt.tight_layout()
+    date = prefix.split('/')[2]
+    stream = prefix.split('/')[1]
+    filepath = f'{DATA_PATH}\\{stream.upper()}-{date}-{instrument}-channel stream analysis.svg'
     # Display the plot
-    plt.show()
+    plt.savefig(filepath, format='svg', dpi=300)
+    # plt.show()
