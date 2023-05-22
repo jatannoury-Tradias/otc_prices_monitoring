@@ -25,6 +25,7 @@
         <list>
           <option value="str.json" />
           <option value="iris.coord_categorisation" />
+          <option value="tuple.__sub__" />
         </list>
       </option>
     </inspection_tool>
