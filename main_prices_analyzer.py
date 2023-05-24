@@ -10,10 +10,13 @@ async def main(instrument: str, folder_path: str):
 
 if __name__ == "__main__":
     instruments = ['BTCEUR', 'ETHEUR']
-    days = [17, 18, 19]
-    streams = ['prices', 'talosprices']
+    days = [22, 23, 24]
+    streams = ['talosprices', 'prices']
 
     for day in days:
         for stream in streams:
             for instrument in instruments:
                 asyncio.run(main(instrument=instrument, folder_path=f'otc_prices_monitoring/{stream}/2023-05-{day}'))
+
+
+

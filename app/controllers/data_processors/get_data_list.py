@@ -8,7 +8,7 @@ def get_defected_prices_list(side, stream, stream_minus_1, stream_plus_1):
         old_price = stream_minus_1["levels"][side][index]['price']
         new_price = stream_plus_1["levels"][side][index]['price']
         diff_with_old = (curr_price - old_price) * 10_000 / (0.5 * (curr_price + old_price))
-        diff_with_new = (curr_price - new_price) * 10_000 / (0.5 * (curr_price + new_price))
+        diff_with_new = (new_price - curr_price) * 10_000 / (0.5 * (curr_price + new_price))
         defected_price = DefectedPrice()
         defected_price.instrument = stream['instrument']
         defected_price.quantity = stream_minus_1['levels'][side][index]['quantity']

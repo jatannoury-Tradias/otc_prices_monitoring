@@ -1,7 +1,7 @@
 import datetime
-import os.path
 
 from matplotlib import pyplot as plt
+
 from app.config.paths import DATA_PATH
 
 
@@ -47,15 +47,18 @@ def defected_prices_data_plotter(dfs: dict, prefix: str, instrument: str):
         ax.xaxis.set_major_locator(plt.MaxNLocator(5))
     legends = ['Difference with old', 'Difference with new']
     fig.legend(legends, loc='lower right', ncol=len(legends))
-    # plt.legend()
     # Adjust spacing between subplots
-    fig.suptitle(f'{prefix[22:].upper()} {instrument} channel stream analysis')
+    splitted_prefix = prefix.split('/')
+    date = splitted_prefix[2]
+    stream = splitted_prefix[1]
+
+
+    fig.suptitle(f'{stream.upper()} {date} {instrument} Stream Variability.')
     # plt.subplots_adjust(wspace=0.1, hspace=0.1)
     fig.subplots_adjust(left=0.05, bottom=0.1, right=0.95, top=0.9, wspace=0.2, hspace=0.43)
     plt.autoscale()
     # plt.tight_layout()
-    date = prefix.split('/')[2]
-    stream = prefix.split('/')[1]
+
     filepath = f'{DATA_PATH}\\{stream.upper()}-{date}-{instrument}-channel stream analysis.svg'
     # Display the plot
     plt.savefig(filepath, format='svg', dpi=300)
