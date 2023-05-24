@@ -42,3 +42,4 @@ async def prices_selector(websocket: WebsocketHelper, price_channel):
                     memory_array_to_be_printed.append(stream_minus_1)
                     memory_array_to_be_printed.append(curr_res)
                     break
+            memory_array.append(curr_res)
