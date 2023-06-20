@@ -1,19 +1,23 @@
 from app.controllers.s3_controllers.upload_to_s3 import upload_to_s3
 from app.tools.websocket_helper import WebsocketHelper
+import datetime
 
 MAX_BASIS_POINTS_ALLOWED = 20
 BASIS_POINTS_FACTOR = 10_000
-
+MIN_LEVELS_ALLOWED = 6
 
 async def prices_selector(websocket: WebsocketHelper, price_channel):
     memory_array = None
     memory_array_to_be_printed = []
     while True:
         curr_res = await websocket.receiver_queue.get()
-
+        if len(curr_res['levels']['buy']) < MIN_LEVELS_ALLOWED or len(curr_res['levels']['sell']) < MIN_LEVELS_ALLOWED:
+            upload_to_s3(curr_res, 'defected')
         if "levels" not in curr_res:
             continue
-        if price_channel != 'prices' and curr_res['event'] != "Talos_All":
+        if price_channel == 'prices' and curr_res['source'] != "Talos_All":
+            continue
+        if price_channel == 'talos' and curr_res['event'] != "Talos_All":
             continue
         if not memory_array:
             memory_array = curr_res

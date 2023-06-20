@@ -14,6 +14,6 @@ def get_defected_prices_list(side, stream, stream_minus_1, stream_plus_1):
         defected_price.quantity = stream_minus_1['levels'][side][index]['quantity']
         defected_price.difference_with_old = diff_with_old
         defected_price.difference_with_new = diff_with_new
-        defected_price.price_timestamp = stream['timestamp']
+        defected_price.price_timestamp = stream['pub_timestamp']
         data.append([defected_price.__dict__])
     return data
