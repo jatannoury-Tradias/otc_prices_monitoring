@@ -11,10 +11,10 @@ async def prices_selector(websocket: WebsocketHelper, price_channel):
     memory_array_to_be_printed = []
     while True:
         curr_res = await websocket.receiver_queue.get()
-        if len(curr_res['levels']['buy']) < MIN_LEVELS_ALLOWED or len(curr_res['levels']['sell']) < MIN_LEVELS_ALLOWED:
-            upload_to_s3(curr_res, 'defected')
         if "levels" not in curr_res:
             continue
+        if len(curr_res['levels']['buy']) < MIN_LEVELS_ALLOWED or len(curr_res['levels']['sell']) < MIN_LEVELS_ALLOWED:
+            upload_to_s3(curr_res, 'defected')
         if price_channel == 'prices' and curr_res['source'] != "Talos_All":
             continue
         if price_channel == 'talos' and curr_res['event'] != "Talos_All":
