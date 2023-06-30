@@ -19,11 +19,11 @@ async def prices_selector(websocket: WebsocketHelper, price_channel):
         if "levels" not in curr_res:
             continue
         if curr_res['event'] == 'prices':
-            check_outbound_levels(price=curr_res, threshold=MIN_OUTBOUND_LEVELS_ALLOWED, channel=price_channel)
-            continue
+            if check_outbound_levels(price=curr_res, threshold=MIN_OUTBOUND_LEVELS_ALLOWED, channel=price_channel):
+                continue
         if curr_res['event'] == 'Talos_All':
-            check_inbound_levels(price=curr_res, channel=price_channel, threshold=MIN_INBOUND_LEVELS_ALLOWED)
-            continue
+            if check_inbound_levels(price=curr_res, channel=price_channel, threshold=MIN_INBOUND_LEVELS_ALLOWED):
+                continue
         if price_channel == 'prices' and curr_res['source'] != "Talos_All":
             continue
         if price_channel == 'talos' and curr_res['event'] != "Talos_All":

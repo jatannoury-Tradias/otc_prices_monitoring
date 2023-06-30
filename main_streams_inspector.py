@@ -26,12 +26,12 @@ async def main(price_channel: str):
 
 
 if __name__ == "__main__":
-    try:
-        if ARGUMENTS[1] == 'talos':
-            print("Starting on Talos")
-            asyncio.run(main(price_channel='talosprices'))
-        else:
-            print('Starting on Prices')
-            asyncio.run(main(price_channel='prices'))
-    except Exception as e:
-        print(e)
+    # try:
+    #     if ARGUMENTS[1] == 'talos':
+    #         print("Starting on Talos")
+    asyncio.run(main(price_channel='talosprices'))
+    #     else:
+    #         print('Starting on Prices')
+    #         asyncio.run(main(price_channel='prices'))
+    # except Exception as e:
+    #     print(e)

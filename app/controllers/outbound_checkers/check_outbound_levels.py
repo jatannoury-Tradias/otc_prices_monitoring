@@ -6,3 +6,6 @@ def check_outbound_levels(price, threshold, channel):
         if len(price['levels']['buy']) < threshold or len(
                 price['levels']['sell']) < threshold:
             upload_to_s3(price, f'defected_{channel}')
+            return True
+
+
